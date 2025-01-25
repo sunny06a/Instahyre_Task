@@ -20,12 +20,21 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-});
-
-// Hash password before saving
-User.beforeCreate(async (user) => {
-  const hashedPassword = await bcrypt.hash(user.password, 10);
-  user.password = hashedPassword;
+}, {
+  hooks: {
+    beforeCreate: async (user) => {
+      if (user.changed('password')) {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        user.password = hashedPassword;
+      }
+    },
+    beforeUpdate: async (user) => {
+      if (user.changed('password')) {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        user.password = hashedPassword;
+      }
+    }
+  }
 });
 
 module.exports = User;

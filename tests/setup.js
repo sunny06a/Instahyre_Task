@@ -1,12 +1,23 @@
-const { sequelize } = require('../src/config/database'); // Correct import
+// In tests/setup.js, modify to:
+const sequelize = require('../src/config/database');
 const app = require('../src/app');
 
 beforeAll(async () => {
-  await sequelize.sync({ force: true });
+  try {
+    await sequelize.sync({ force: true });
+  } catch (error) {
+    console.error('Sync error:', error);
+  }
 });
 
 afterAll(async () => {
-  await sequelize.close();
-  // Close Express server properly
-  await new Promise(resolve => app.close(resolve));
+  try {
+    await sequelize.close();
+    // Properly close server
+    if (app.server) {
+      await new Promise(resolve => app.server.close(resolve));
+    }
+  } catch (error) {
+    console.error('Teardown error:', error);
+  }
 });

@@ -22,12 +22,12 @@ sequelize.sync({ force: true }).then(() => {
   console.error('Error syncing database:', error);
 });
 
-// Add this at the end
-const server = app.listen(process.env.PORT || 3000, () => {
-  if (process.env.NODE_ENV !== 'test') {
+let server;
+if (process.env.NODE_ENV !== 'test') {
+  server = app.listen(process.env.PORT || 3000, () => {
     console.log(`Server running on port ${process.env.PORT || 3000}`);
-  }
-});
+  });
+}
 
 // Export both app and server
 module.exports = { app, server };
