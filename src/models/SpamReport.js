@@ -6,6 +6,10 @@ const SpamReport = sequelize.define('SpamReport', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  reportedBy: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
 module.exports = SpamReport;
